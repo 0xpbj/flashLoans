@@ -14,7 +14,7 @@ export function handleFlashLoan(event: FlashLoan): void {
   let initiator = getOrInitUser(event.params.initiator);
   let poolReserve = getOrInitReserve(event.params.asset, event);
   if (!poolReserve) {
-    console.log('handleFlashLoan:  failed to getOrInitReserve. Returning.')
+    // console.log('handleFlashLoan:  failed to getOrInitReserve. Returning.')
     return
   }
 

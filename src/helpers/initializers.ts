@@ -32,7 +32,7 @@ export function getOrInitUser(address: Address): User {
   return user as User;
 }
 
-export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): any {
+export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve {    // Was ret. Reserve
   let poolId = getPoolByContract(event);
   let reserveId = getReserveId(underlyingAsset, poolId);
   let reserve = Reserve.load(reserveId);
