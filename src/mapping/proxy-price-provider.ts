@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Bytes, Address, log, ethereum } from '@graphprotocol/graph-ts';
 
 import {

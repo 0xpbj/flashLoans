@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { log } from '@graphprotocol/graph-ts';
+
 import {
   BalanceTransfer as ATokenTransfer,
   Mint as ATokenMint,
@@ -134,7 +136,7 @@ function tokenBurn(event: ethereum.Event, from: Address, value: BigInt, index: B
   let aToken = getOrInitAToken(event.address);
   let userReserve = getOrInitUserReserve(from, aToken.underlyingAssetAddress as Address, event);
   let poolReserve = getOrInitReserve(aToken.underlyingAssetAddress as Address, event);
-  if (!poolReserve) {
+  if (!poolReserve || poolReserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of tokenBurn')
     return
   }
@@ -171,7 +173,7 @@ function tokenBurn(event: ethereum.Event, from: Address, value: BigInt, index: B
 function tokenMint(event: ethereum.Event, from: Address, value: BigInt, index: BigInt): void {
   let aToken = getOrInitAToken(event.address);
   let poolReserve = getOrInitReserve(aToken.underlyingAssetAddress as Address, event);
-  if (!poolReserve) {
+  if (!poolReserve || poolReserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of tokenMint')
     return
   }
@@ -238,7 +240,7 @@ export function handleATokenTransfer(event: ATokenTransfer): void {
   );
 
   let reserve = getOrInitReserve(aToken.underlyingAssetAddress as Address, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleATokenTransfer')
     return
   }
@@ -268,7 +270,7 @@ export function handleVariableTokenBurn(event: VTokenBurn): void {
   let index = event.params.index;
   let userReserve = getOrInitUserReserve(from, vToken.underlyingAssetAddress as Address, event);
   let poolReserve = getOrInitReserve(vToken.underlyingAssetAddress as Address, event);
-  if (!poolReserve) {
+  if (!poolReserve || poolReserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleVariableTokenBurn')
     return
   }
@@ -311,7 +313,7 @@ export function handleVariableTokenBurn(event: VTokenBurn): void {
 export function handleVariableTokenMint(event: VTokenMint): void {
   let vToken = getOrInitVToken(event.address);
   let poolReserve = getOrInitReserve(vToken.underlyingAssetAddress as Address, event);
-  if (!poolReserve) {
+  if (!poolReserve || poolReserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleVariableTokenMint')
     return
   }
@@ -374,7 +376,7 @@ export function handleStableTokenMint(event: STokenMint): void {
   let userReserve = getOrInitUserReserve(from, sToken.underlyingAssetAddress as Address, event);
 
   let poolReserve = getOrInitReserve(sToken.underlyingAssetAddress as Address, event);
-  if (!poolReserve) {
+  if (!poolReserve || poolReserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleStableTokenMint')
     return
   }
@@ -431,7 +433,7 @@ export function handleStableTokenBurn(event: STokenBurn): void {
     event
   );
   let poolReserve = getOrInitReserve(sToken.underlyingAssetAddress as Address, event);
-  if (!poolReserve) {
+  if (!poolReserve || poolReserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleStableTokenBurn')
     return
   }

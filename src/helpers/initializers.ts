@@ -12,7 +12,7 @@ export function getPoolByContract(event: ethereum.Event): string {
   if (contractToPoolMapping === null) {
     // throw new Error(contractAddress + 'is not registered in ContractToPoolMapping');
     // log.error('{} is not registered in ContractToPoolMapping', [contractAddress]);
-    return ''
+    return 'fake-pool-id'
   }
   return contractToPoolMapping.pool;
 }
@@ -27,11 +27,19 @@ export function getOrInitUser(address: Address): User {
   return user as User;
 }
 
-export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve|undefined {
+export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve {
   let poolId = getPoolByContract(event);
-  if (!poolId) {
-    return undefined
+  if (!poolId || poolId === 'fake-pool-id') {
+    const _reserve = new Reserve('fake-reserve-id');
+    _reserve.underlyingAsset = underlyingAsset;
+    _reserve.pool = poolId;
+    _reserve.symbol = '';
+    _reserve.name = '';
+    _reserve.decimals = 0;
+    
+    return _reserve as Reserve;
   }
+
   let reserveId = getReserveId(underlyingAsset, poolId);
   let reserve = Reserve.load(reserveId);
   log.warning('{} something to cause redeploy', [])

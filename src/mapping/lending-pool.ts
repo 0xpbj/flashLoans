@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+import { log } from '@graphprotocol/graph-ts';
+
 import {
   FlashLoan
 } from '../../generated/templates/LendingPool/LendingPool';
@@ -13,7 +16,7 @@ import { EventTypeRef, getHistoryId } from '../utils/id-generation';
 export function handleFlashLoan(event: FlashLoan): void {
   let initiator = getOrInitUser(event.params.initiator);
   let poolReserve = getOrInitReserve(event.params.asset, event);
-  if (!poolReserve) {
+  if (!poolReserve || poolReserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleFlashLoan')
     return
   }

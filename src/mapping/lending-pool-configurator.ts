@@ -80,7 +80,7 @@ function updateInterestRateStrategy(
 export function handleReserveInitialized(event: ReserveInitialized): void {
   let underlyingAssetAddress = event.params.asset; //_reserve;
   let reserve = getOrInitReserve(underlyingAssetAddress, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleReserveInitialized')
     return
   }
@@ -163,21 +163,21 @@ export function handleReserveInterestRateStrategyChanged(
   }
   //////
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve || reserve.pool === 'fake-pool-id') {
+    log.warning('Pool reserve undefined, returning out of handleReserveInterestRateStrategyChanged')
+    return
+  }
   // if reserve is not initialize, needed to handle ropsten wrong deployment
   if (reserve.aToken == zeroAddress().toHexString()) {
     return;
   }
   updateInterestRateStrategy(reserve, event.params.strategy, false);
-  if (!reserve) {
-    log.warning('Pool reserve undefined, returning out of updateInterestRateStrategy')
-    return
-  }
   saveReserve(reserve, event);
 }
 
 export function handleBorrowingDisabledOnReserve(event: BorrowingDisabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleBorrowingDisabledOnReserve')
     return
   }
@@ -187,7 +187,7 @@ export function handleBorrowingDisabledOnReserve(event: BorrowingDisabledOnReser
 
 export function handleBorrowingEnabledOnReserve(event: BorrowingEnabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleBorrowingEnabledOnReserve')
     return
   }
@@ -197,7 +197,7 @@ export function handleBorrowingEnabledOnReserve(event: BorrowingEnabledOnReserve
 }
 export function handleStableRateDisabledOnReserve(event: StableRateDisabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleStableRateDisabledOnReserve')
     return
   }
@@ -206,7 +206,7 @@ export function handleStableRateDisabledOnReserve(event: StableRateDisabledOnRes
 }
 export function handleStableRateEnabledOnReserve(event: StableRateEnabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleStableRateEnabledOnReserve')
     return
   }
@@ -216,7 +216,7 @@ export function handleStableRateEnabledOnReserve(event: StableRateEnabledOnReser
 
 export function handleReserveActivated(event: ReserveActivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleReserveActivated')
     return
   }
@@ -225,7 +225,7 @@ export function handleReserveActivated(event: ReserveActivated): void {
 }
 export function handleReserveDeactivated(event: ReserveDeactivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleReserveDeactivated')
     return
   }
@@ -235,7 +235,7 @@ export function handleReserveDeactivated(event: ReserveDeactivated): void {
 
 export function handleReserveFreezed(event: ReserveActivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleReserveFreezed')
     return
   }
@@ -244,7 +244,7 @@ export function handleReserveFreezed(event: ReserveActivated): void {
 }
 export function handleReserveUnfreezed(event: ReserveDeactivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleReserveUnfreezed')
     return
   }
@@ -254,7 +254,7 @@ export function handleReserveUnfreezed(event: ReserveDeactivated): void {
 
 export function handleCollateralConfigurationChanged(event: CollateralConfigurationChanged): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleCollateralConfigurationChanged')
     return
   }
@@ -271,7 +271,7 @@ export function handleCollateralConfigurationChanged(event: CollateralConfigurat
 
 export function handleReserveFactorChanged(event: ReserveFactorChanged): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleReserveFactorChanged')
     return
   }
@@ -281,7 +281,7 @@ export function handleReserveFactorChanged(event: ReserveFactorChanged): void {
 
 export function handleReserveDecimalsChanged(event: ReserveDecimalsChanged): void {
   let reserve = getOrInitReserve(event.params.asset, event);
-  if (!reserve) {
+  if (!reserve || reserve.pool === 'fake-pool-id') {
     log.warning('Pool reserve undefined, returning out of handleReserveDecimalsChanged')
     return
   }
