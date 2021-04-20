@@ -3,8 +3,8 @@ type FlashLoan @entity {
   tx hash
   """ # TODO: replace with blockNumber/timestamp + blockPosition
   id: ID!
-  pool: Pool!
-  reserve: Reserve!
+  #pool: Pool!
+  #reserve: Reserve!
   target: Bytes!
   amount: BigInt!
   totalFee: BigInt!

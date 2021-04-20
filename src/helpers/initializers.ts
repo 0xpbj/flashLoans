@@ -5,19 +5,13 @@ import {
   ContractToPoolMapping,
 } from '../../generated/schema';
 import { getReserveId } from '../utils/id-generation';
-import {
-  // PRICE_ORACLE_ASSET_PLATFORM_SIMPLE,
-  // PRICE_ORACLE_ASSET_TYPE_SIMPLE,
-  // zeroAddress,
-  // zeroBD,
-  // zeroBI,
-} from '../utils/converters';
 
 export function getPoolByContract(event: ethereum.Event): string {
   let contractAddress = event.address.toHexString();
   let contractToPoolMapping = ContractToPoolMapping.load(contractAddress);
   if (contractToPoolMapping === null) {
-    throw new Error(contractAddress + 'is not registered in ContractToPoolMapping');
+    // throw new Error(contractAddress + 'is not registered in ContractToPoolMapping');
+    log.error('{} is not registered in ContractToPoolMapping', [contractAddress]);
   }
   return contractToPoolMapping.pool;
 }
@@ -32,10 +26,11 @@ export function getOrInitUser(address: Address): User {
   return user as User;
 }
 
-export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve {    // Was ret. Reserve
+export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve {
   let poolId = getPoolByContract(event);
   let reserveId = getReserveId(underlyingAsset, poolId);
   let reserve = Reserve.load(reserveId);
+  log.warning('{} something to cause redeploy', [])
 
   if (reserve === null) {
     reserve = new Reserve(reserveId);

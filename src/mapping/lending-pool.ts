@@ -13,10 +13,6 @@ import { EventTypeRef, getHistoryId } from '../utils/id-generation';
 export function handleFlashLoan(event: FlashLoan): void {
   let initiator = getOrInitUser(event.params.initiator);
   let poolReserve = getOrInitReserve(event.params.asset, event);
-  if (!poolReserve) {
-    // console.log('handleFlashLoan:  failed to getOrInitReserve. Returning.')
-    return
-  }
 
   let premium = event.params.premium;
 
@@ -29,8 +25,8 @@ export function handleFlashLoan(event: FlashLoan): void {
   poolReserve.save();
 
   let flashLoan = new FlashLoanAction(getHistoryId(event, EventTypeRef.FlashLoan));
-  flashLoan.pool = poolReserve.pool;
-  flashLoan.reserve = poolReserve.id;
+  // flashLoan.pool = poolReserve.pool;
+  // flashLoan.reserve = poolReserve.id;
   flashLoan.target = event.params.target;
   flashLoan.initiator = initiator.id;
   flashLoan.totalFee = premium;
