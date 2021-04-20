@@ -11,7 +11,8 @@ export function getPoolByContract(event: ethereum.Event): string {
   let contractToPoolMapping = ContractToPoolMapping.load(contractAddress);
   if (contractToPoolMapping === null) {
     // throw new Error(contractAddress + 'is not registered in ContractToPoolMapping');
-    log.error('{} is not registered in ContractToPoolMapping', [contractAddress]);
+    // log.error('{} is not registered in ContractToPoolMapping', [contractAddress]);
+    return ''
   }
   return contractToPoolMapping.pool;
 }
@@ -26,8 +27,11 @@ export function getOrInitUser(address: Address): User {
   return user as User;
 }
 
-export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve {
+export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve|undefined {
   let poolId = getPoolByContract(event);
+  if (!poolId) {
+    return undefined
+  }
   let reserveId = getReserveId(underlyingAsset, poolId);
   let reserve = Reserve.load(reserveId);
   log.warning('{} something to cause redeploy', [])

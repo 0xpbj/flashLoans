@@ -13,6 +13,10 @@ import { EventTypeRef, getHistoryId } from '../utils/id-generation';
 export function handleFlashLoan(event: FlashLoan): void {
   let initiator = getOrInitUser(event.params.initiator);
   let poolReserve = getOrInitReserve(event.params.asset, event);
+  if (!poolReserve) {
+    log.warning('Pool reserve undefined, returning out of handleFlashLoan')
+    return
+  }
 
   let premium = event.params.premium;
 
