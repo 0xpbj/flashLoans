@@ -1,3 +1,4 @@
+import { log } from '@graphprotocol/graph-ts';
 import {
   BalanceTransfer as ATokenTransfer,
   Mint as ATokenMint,
@@ -133,6 +134,10 @@ function tokenBurn(event: ethereum.Event, from: Address, value: BigInt, index: B
   let aToken = getOrInitAToken(event.address);
   let userReserve = getOrInitUserReserve(from, aToken.underlyingAssetAddress as Address, event);
   let poolReserve = getOrInitReserve(aToken.underlyingAssetAddress as Address, event);
+  if (!poolReserve) {
+    log.warning('Pool reserve undefined, returning out of tokenBurn')
+    return
+  }
 
   let calculatedAmount = rayDiv(value, index);
 
@@ -166,6 +171,10 @@ function tokenBurn(event: ethereum.Event, from: Address, value: BigInt, index: B
 function tokenMint(event: ethereum.Event, from: Address, value: BigInt, index: BigInt): void {
   let aToken = getOrInitAToken(event.address);
   let poolReserve = getOrInitReserve(aToken.underlyingAssetAddress as Address, event);
+  if (!poolReserve) {
+    log.warning('Pool reserve undefined, returning out of tokenMint')
+    return
+  }
   poolReserve.totalATokenSupply = poolReserve.totalATokenSupply.plus(value);
   // Check if we are minting to treasury
   if (from.toHexString() != '0x464c71f6c2f760dda6093dcb91c24c39e5d6e18c') {
@@ -229,6 +238,10 @@ export function handleATokenTransfer(event: ATokenTransfer): void {
   );
 
   let reserve = getOrInitReserve(aToken.underlyingAssetAddress as Address, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleATokenTransfer')
+    return
+  }
   if (
     userFromReserve.usageAsCollateralEnabledOnUser &&
     !userToReserve.usageAsCollateralEnabledOnUser
@@ -255,6 +268,10 @@ export function handleVariableTokenBurn(event: VTokenBurn): void {
   let index = event.params.index;
   let userReserve = getOrInitUserReserve(from, vToken.underlyingAssetAddress as Address, event);
   let poolReserve = getOrInitReserve(vToken.underlyingAssetAddress as Address, event);
+  if (!poolReserve) {
+    log.warning('Pool reserve undefined, returning out of handleVariableTokenBurn')
+    return
+  }
 
   let calculatedAmount = rayDiv(value, index);
   userReserve.scaledVariableDebt = userReserve.scaledVariableDebt.minus(calculatedAmount);
@@ -294,6 +311,10 @@ export function handleVariableTokenBurn(event: VTokenBurn): void {
 export function handleVariableTokenMint(event: VTokenMint): void {
   let vToken = getOrInitVToken(event.address);
   let poolReserve = getOrInitReserve(vToken.underlyingAssetAddress as Address, event);
+  if (!poolReserve) {
+    log.warning('Pool reserve undefined, returning out of handleVariableTokenMint')
+    return
+  }
 
   let from = event.params.from;
   if (from.toHexString() != event.params.onBehalfOf.toHexString()) {
@@ -353,6 +374,10 @@ export function handleStableTokenMint(event: STokenMint): void {
   let userReserve = getOrInitUserReserve(from, sToken.underlyingAssetAddress as Address, event);
 
   let poolReserve = getOrInitReserve(sToken.underlyingAssetAddress as Address, event);
+  if (!poolReserve) {
+    log.warning('Pool reserve undefined, returning out of handleStableTokenMint')
+    return
+  }
 
   let user = getOrInitUser(from);
   if (
@@ -406,6 +431,10 @@ export function handleStableTokenBurn(event: STokenBurn): void {
     event
   );
   let poolReserve = getOrInitReserve(sToken.underlyingAssetAddress as Address, event);
+  if (!poolReserve) {
+    log.warning('Pool reserve undefined, returning out of handleStableTokenBurn')
+    return
+  }
   let balanceIncrease = event.params.balanceIncrease;
   let amount = event.params.amount;
 

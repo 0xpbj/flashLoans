@@ -80,6 +80,10 @@ function updateInterestRateStrategy(
 export function handleReserveInitialized(event: ReserveInitialized): void {
   let underlyingAssetAddress = event.params.asset; //_reserve;
   let reserve = getOrInitReserve(underlyingAssetAddress, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleReserveInitialized')
+    return
+  }
 
   let weth = WETHReserve.load('weth');
 
@@ -164,56 +168,96 @@ export function handleReserveInterestRateStrategyChanged(
     return;
   }
   updateInterestRateStrategy(reserve, event.params.strategy, false);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of updateInterestRateStrategy')
+    return
+  }
   saveReserve(reserve, event);
 }
 
 export function handleBorrowingDisabledOnReserve(event: BorrowingDisabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleBorrowingDisabledOnReserve')
+    return
+  }
   reserve.borrowingEnabled = false;
   saveReserve(reserve, event);
 }
 
 export function handleBorrowingEnabledOnReserve(event: BorrowingEnabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleBorrowingEnabledOnReserve')
+    return
+  }
   reserve.borrowingEnabled = true;
   reserve.stableBorrowRateEnabled = event.params.stableRateEnabled;
   saveReserve(reserve, event);
 }
 export function handleStableRateDisabledOnReserve(event: StableRateDisabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleStableRateDisabledOnReserve')
+    return
+  }
   reserve.stableBorrowRateEnabled = false;
   saveReserve(reserve, event);
 }
 export function handleStableRateEnabledOnReserve(event: StableRateEnabledOnReserve): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleStableRateEnabledOnReserve')
+    return
+  }
   reserve.stableBorrowRateEnabled = true;
   saveReserve(reserve, event);
 }
 
 export function handleReserveActivated(event: ReserveActivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleReserveActivated')
+    return
+  }
   reserve.isActive = true;
   saveReserve(reserve, event);
 }
 export function handleReserveDeactivated(event: ReserveDeactivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleReserveDeactivated')
+    return
+  }
   reserve.isActive = false;
   saveReserve(reserve, event);
 }
 
 export function handleReserveFreezed(event: ReserveActivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleReserveFreezed')
+    return
+  }
   reserve.isFrozen = true;
   saveReserve(reserve, event);
 }
 export function handleReserveUnfreezed(event: ReserveDeactivated): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleReserveUnfreezed')
+    return
+  }
   reserve.isFrozen = false;
   saveReserve(reserve, event);
 }
 
 export function handleCollateralConfigurationChanged(event: CollateralConfigurationChanged): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleCollateralConfigurationChanged')
+    return
+  }
   reserve.usageAsCollateralEnabled = false;
   if (event.params.liquidationThreshold.gt(zeroBI())) {
     reserve.usageAsCollateralEnabled = true;
@@ -227,12 +271,20 @@ export function handleCollateralConfigurationChanged(event: CollateralConfigurat
 
 export function handleReserveFactorChanged(event: ReserveFactorChanged): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleReserveFactorChanged')
+    return
+  }
   reserve.reserveFactor = event.params.factor;
   saveReserve(reserve, event);
 }
 
 export function handleReserveDecimalsChanged(event: ReserveDecimalsChanged): void {
   let reserve = getOrInitReserve(event.params.asset, event);
+  if (!reserve) {
+    log.warning('Pool reserve undefined, returning out of handleReserveDecimalsChanged')
+    return
+  }
   reserve.decimals = event.params.decimals.toI32();
   saveReserve(reserve, event);
 }
