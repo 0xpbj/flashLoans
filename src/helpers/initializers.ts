@@ -1,21 +1,20 @@
 import { Address, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
 import {
-  Reserve,
+  // Reserve,
   User,
-  ContractToPoolMapping,
+  // ContractToPoolMapping,
 } from '../../generated/schema';
 import { getReserveId } from '../utils/id-generation';
 
-export function getPoolByContract(event: ethereum.Event): string {
-  let contractAddress = event.address.toHexString();
-  let contractToPoolMapping = ContractToPoolMapping.load(contractAddress);
-  if (contractToPoolMapping === null) {
-    // throw new Error(contractAddress + 'is not registered in ContractToPoolMapping');
-    // log.error('{} is not registered in ContractToPoolMapping', [contractAddress]);
-    return 'fake-pool-id'
-  }
-  return contractToPoolMapping.pool;
-}
+// export function getPoolByContract(event: ethereum.Event): string {
+//   let contractAddress = event.address.toHexString();
+//   let contractToPoolMapping = ContractToPoolMapping.load(contractAddress);
+//   if (contractToPoolMapping === null) {
+//     log.error('{} is not registered in ContractToPoolMapping', [contractAddress]);
+//     throw new Error(contractAddress + 'is not registered in ContractToPoolMapping');
+//   }
+//   return contractToPoolMapping.pool;
+// }
 
 export function getOrInitUser(address: Address): User {
   let user = User.load(address.toHexString());
@@ -27,30 +26,19 @@ export function getOrInitUser(address: Address): User {
   return user as User;
 }
 
-export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve {
-  let poolId = getPoolByContract(event);
-  if (!poolId || poolId === 'fake-pool-id') {
-    const _reserve = new Reserve('fake-reserve-id');
-    _reserve.underlyingAsset = underlyingAsset;
-    _reserve.pool = poolId;
-    _reserve.symbol = '';
-    _reserve.name = '';
-    _reserve.decimals = 0;
-    
-    return _reserve as Reserve;
-  }
+// export function getOrInitReserve(underlyingAsset: Address, event: ethereum.Event): Reserve {
+//   let poolId = getPoolByContract(event);
+//   let reserveId = getReserveId(underlyingAsset, poolId);
+//   let reserve = Reserve.load(reserveId);
+//   log.warning('{} something to cause redeploy', [])
 
-  let reserveId = getReserveId(underlyingAsset, poolId);
-  let reserve = Reserve.load(reserveId);
-  log.warning('{} something to cause redeploy', [])
-
-  if (reserve === null) {
-    reserve = new Reserve(reserveId);
-    reserve.underlyingAsset = underlyingAsset;
-    reserve.pool = poolId;
-    reserve.symbol = '';
-    reserve.name = '';
-    reserve.decimals = 0;
-  }
-  return reserve as Reserve;
-}
+//   if (reserve === null) {
+//     reserve = new Reserve(reserveId);
+//     reserve.underlyingAsset = underlyingAsset;
+//     reserve.pool = poolId;
+//     reserve.symbol = '';
+//     reserve.name = '';
+//     reserve.decimals = 0;
+//   }
+//   return reserve as Reserve;
+// }
